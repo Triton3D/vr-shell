@@ -9,9 +9,12 @@ while True:
     except:
         break                                        
 #print(len(VideoModes))
+   
 MaxRes=win32api.EnumDisplaySettings(None,len(VideoModes)-5)
-try:
-    win32api.ChangeDisplaySettings(MaxRes,0)
-    print("Установлено максимально допустимое разрешение!")
-except:
-    print("Error")
+LST=list(VideoModes)
+print(LST)
+##try:
+##    win32api.ChangeDisplaySettings(MaxRes,0)
+##    print("Установлено максимально допустимое разрешение!")
+##except:
+##    print("Error")

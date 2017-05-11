@@ -1,0 +1,4 @@
+pygame
+win32api
+psutil
+win32con
