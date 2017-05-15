@@ -1,41 +1,51 @@
 import psutil
 from datetime import datetime,date,time
 import time
+import sqlite3 as lite
+
 def CheckProcStatus(proc_name='explorer.exe'):
     for process in psutil.process_iter():
         if process.name() == proc_name:
-            #print("Proccess {} is running!".format(proc_name))
             return True
+#def WriteToDB(db)
 
-def GetTime():
-    time_list=list(time.localtime())[0:6]
-    time_string=""
-    time_string=str(time_list[0])+"/"+str(time_list[1])+"/"+str(time_list[2])+"; "+ \
-                 str(time_list[3])+":"+str(time_list[4])+":"+str(time_list[5])
-    return time_string
-
-##CheckProcStatus()
-flag=False
-flag2=False
+proc_start=False
+proc_none=False
+proc_run=False
+pattern=('notepad.exe','calc.exe','mspaint.exe','cmd.exe')
+proc_name=""
 while True:
-    time.sleep(1)
-##    print(GetTime())
-    if CheckProcStatus('notepad.exe') and flag==False:
+    time.sleep(2)
+    print("Begin: "+str(datetime.now()))
+    for proc in pattern:
+            if CheckProcStatus(proc):
+                proc_name=proc
+                break
+    proc_run=CheckProcStatus(proc_name)   
+    if proc_run and proc_start==False:     #Getting the process start state and start time
         start_time=datetime.now()
-        print("Notepad has been started at " + str(start_time))
-       
-        flag=True
-        
-    elif flag==True and not CheckProcStatus('notepad.exe'):
-        flag=False
-        flag2=False
+        print("Process " +proc_name+ " has been started at " + str(start_time))
+        proc_start=True
+            
+    elif proc_start and not proc_run: #Getting the process stop state and stop time
+        proc_start=False
+        proc_none=False
         stop_time=datetime.now()
         duration=stop_time-start_time
-        print("Notepad has been stopped at " + str(stop_time)+" Duration: "+str(duration))
-        
-        
-    elif flag==False and flag2==False:
+        #print(str(duration)[:-7])
+        print("Process " +proc_name+ " has been stopped at " + str(stop_time)+" Duration: "+str(duration))
+
+        start_time=str(start_time)[:-7]
+        stop_time=str(stop_time)[:-7]
+        duration=str(duration)[:-7]
+        con = lite.connect('sqlite\\processes.db')   #Write to DB
+        with con:
+            cur=con.cursor()
+            cur.execute("CREATE TABLE IF NOT EXISTS Processes(Id INT,Name TEXT,StartTime DATETIME,StopTime DATETIME,Duration DATETIME)")
+            cur.execute("INSERT INTO Processes VALUES(1,'"+proc_name+"','"+start_time+"','"+stop_time+"','"+duration+"')")
+
+    elif not proc_start and not proc_none:                   #Waiting for the process
         print("Waiting")
-        flag2=True
-    
-print(GetTime())
+        proc_none=True
+    print("End: "+str(datetime.now()))
+
