@@ -1,4 +1,5 @@
 import psutil
+from datetime import datetime,date,time
 import time
 def CheckProcStatus(proc_name='explorer.exe'):
     for process in psutil.process_iter():
@@ -20,13 +21,19 @@ while True:
     time.sleep(1)
 ##    print(GetTime())
     if CheckProcStatus('notepad.exe') and flag==False:
-        print("Notepad has been started at " + GetTime())
+        start_time=datetime.now()
+        print("Notepad has been started at " + str(start_time))
+       
         flag=True
         
     elif flag==True and not CheckProcStatus('notepad.exe'):
         flag=False
         flag2=False
-        print("Notepad has been stopped at " + GetTime())
+        stop_time=datetime.now()
+        duration=stop_time-start_time
+        print("Notepad has been stopped at " + str(stop_time)+" Duration: "+str(duration))
+        
+        
     elif flag==False and flag2==False:
         print("Waiting")
         flag2=True
