@@ -12,6 +12,6 @@ if sys.platform == "win32":
 
 setup(  name = "guifoo",
         version = "0.1",
-        description = "My GUI application!",
+        description = "VR Shell",
         options = {"build_exe": build_exe_options},
         executables = [Executable("joy-keyboard.pyw", base=base)])
