@@ -1,7 +1,7 @@
 import psutil
 from datetime import datetime,date,time
 import time
-import sqlite3 as lite
+import psycopg2
 
 def CheckProcStatus(proc_name='explorer.exe'):
     for process in psutil.process_iter():
@@ -12,7 +12,7 @@ def CheckProcStatus(proc_name='explorer.exe'):
 proc_start=False
 proc_none=False
 proc_run=False
-pattern=('notepad.exe','calc.exe','mspaint.exe','cmd.exe')
+pattern=('notepad.exe','calc.exe','mspaint.exe')
 proc_name=""
 while True:
     time.sleep(2)
@@ -38,12 +38,12 @@ while True:
         start_time=str(start_time)[:-7]
         stop_time=str(stop_time)[:-7]
         duration=str(duration)[:-7]
-        con = lite.connect('sqlite\\processes.db')   #Write to DB
+        con = psycopg2.connect(database='vr-shell',user='vr-man',password='QwertyS123!',host='localhost',port='5169')   #Write to DB
         with con:
             cur=con.cursor()
-            cur.execute("CREATE TABLE IF NOT EXISTS Processes(Id INT,Name TEXT,StartTime DATETIME,StopTime DATETIME,Duration DATETIME)")
-            cur.execute("INSERT INTO Processes VALUES(1,'"+proc_name+"','"+start_time+"','"+stop_time+"','"+duration+"')")
-
+            cur.execute("CREATE TABLE IF NOT EXISTS Processes(Name text,StartTime timestamp without time zone,StopTime timestamp without time zone,Duration time without time zone)")
+            cur.execute("INSERT INTO Processes VALUES('"+proc_name+"','"+start_time+"','"+stop_time+"','"+duration+"')")
+        con.close()
     elif not proc_start and not proc_none:                   #Waiting for the process
         print("Waiting")
         proc_none=True
