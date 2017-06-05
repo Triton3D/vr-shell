@@ -16,7 +16,7 @@ pattern=('notepad.exe','calc.exe','mspaint.exe','cmd.exe')
 proc_name=""
 while True:
     time.sleep(2)
-    print("Begin: "+str(datetime.now()))
+    #print("Begin: "+str(datetime.now()))
     for proc in pattern:
             if CheckProcStatus(proc):
                 proc_name=proc
@@ -47,5 +47,5 @@ while True:
     elif not proc_start and not proc_none:                   #Waiting for the process
         print("Waiting")
         proc_none=True
-    print("End: "+str(datetime.now()))
+   # print("End: "+str(datetime.now()))
 
